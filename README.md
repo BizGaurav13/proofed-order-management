@@ -1,40 +1,154 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Proofed Order Management Dashboard
 
-## Getting Started
+🚀 Live Demo: [View Live Demo on Vercel](https://proofed-order-management.vercel.app)
 
-First, run the development server:
+## ✨ Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **📊 Interactive Dashboard**: Clean and modern interface for order management
+- **📋 Order Table**: Displays orders with customer information, job types, and status
+- **🔢 Advanced Pagination**: Smart pagination with configurable page sizes (5, 10, 20, 50 items per page)
+- **🎨 Modern UI**: Beautiful, responsive design using Styled Components
+- **⚡ Real-time Data**: Built with React Query for efficient data fetching and caching
+- **📱 Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
+- **🔍 Type Safety**: Full TypeScript support for better development experience
+- **🎯 Status Tracking**: Track orders with different statuses (in queue, on hold, offer, assign)
+- **⏰ Due Date Management**: Monitor order due dates and deadlines
+
+## 🛠️ Tech Stack
+
+- **Framework**: [Next.js 15](https://nextjs.org/) with App Router
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Styled Components](https://styled-components.com/)
+- **State Management**: [TanStack Query](https://tanstack.com/query) (React Query)
+- **Development**: [ESLint](https://eslint.org/) for code quality
+- **Deployment**: [Vercel](https://vercel.com/) for seamless deployment
+
+## 📁 Project Structure
+
+```
+proofed-order-management/
+├── public/                    # Static assets
+│   ├── favicon.ico
+│   ├── file.svg
+│   ├── globe.svg
+│   ├── next.svg
+│   ├── vercel.svg
+│   └── window.svg
+├── src/
+│   ├── _mock/                # Mock data
+│   │   └── orders.ts
+│   ├── components/           # React components
+│   │   ├── Dashboard.tsx    # Main dashboard component
+│   │   ├── OrderTable.tsx   # Order table component
+│   │   └── styles/          # Styled components
+│   │       ├── dashboard.styles.ts
+│   │       └── orderTable.styles.ts
+│   ├── pages/               # Next.js pages
+│   │   ├── _app.tsx        # App wrapper
+│   │   ├── _document.tsx   # Document wrapper
+│   │   ├── index.tsx       # Home page
+│   │   └── api/            # API routes
+│   │       └── orders.ts   # Orders API endpoint
+│   ├── styles/              # Global styles
+│   │   └── globals.css
+│   ├── types/               # TypeScript type definitions
+│   │   ├── api.d.ts        # API response types
+│   │   └── order.d.ts      # Order-related types
+│   └── utils/               # Utility functions
+│       └── helper.ts
+├── .eslintrc.json          # ESLint configuration
+├── next.config.ts          # Next.js configuration
+├── package.json            # Dependencies and scripts
+├── tsconfig.json           # TypeScript configuration
+└── README.md              # Project documentation
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Getting Started
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+### Prerequisites
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+- Node.js 18+ 
+- npm, yarn, pnpm, or bun
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+### Installation
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/BizGaurav13/proofed-order-management.git
+   cd proofed-order-management
+   ```
 
-## Learn More
+2. **Install dependencies**
+   ```bash
+   npm install
+   # or
+   yarn install
+   # or
+   pnpm install
+   # or
+   bun install
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+3. **Run the development server**
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   # or
+   pnpm dev
+   # or
+   bun dev
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+4. **Open your browser**
+   Navigate to [http://localhost:3000](http://localhost:3000) to view the application.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📖 Usage
 
-## Deploy on Vercel
+### Dashboard Features
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **View Orders**: Browse through all orders in a paginated table
+- **Pagination**: Navigate through pages using the pagination controls
+- **Page Size**: Change the number of items displayed per page (5, 10, 20, 50)
+- **Order Details**: View customer name, content size, job type, due date, and status
+- **Status Tracking**: Monitor order status (in queue, on hold, offer, assign)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+### API Endpoints
+
+- `GET /api/orders` - Fetch paginated orders with query parameters:
+  - `page` (number): Page number (default: 1)
+  - `limit` (number): Items per page (default: 10)
+
+## 🏗️ Development
+
+### Available Scripts
+
+```bash
+# Start development server with Turbopack
+npm run dev
+
+# Build for production
+npm run build
+
+# Start production server
+npm run start
+
+# Run ESLint
+npm run lint
+```
+
+### Code Structure
+
+- **Components**: Reusable React components in `src/components/`
+- **Pages**: Next.js pages in `src/pages/`
+- **API Routes**: Backend API endpoints in `src/pages/api/`
+- **Types**: TypeScript type definitions in `src/types/`
+- **Styles**: Styled Components in component-specific style files
+
+### Environment Variables
+
+No environment variables are required for this project as it uses mock data.
+
+---
+
+**Made with ❤️ using Next.js, TypeScript, and Styled Components**

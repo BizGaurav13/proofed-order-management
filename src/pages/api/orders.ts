@@ -13,7 +13,7 @@ export default function handler(
   try {
     // Get pagination parameters from query
     const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 5;
+    const limit = parseInt(req.query.limit as string) || 10;
 
     // Calculate pagination
     const totalRecords = mockOrders.length;
