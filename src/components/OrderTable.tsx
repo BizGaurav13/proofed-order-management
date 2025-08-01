@@ -15,7 +15,8 @@ import {
   JobBadge,
   LoadingContainer,
   ErrorContainer,
-  EmptyContainer
+  EmptyContainer,
+  TimeRemaining
 } from './styles/orderTable.styles';
 
 // Fetch orders function
@@ -84,11 +85,15 @@ const OrderTable: React.FC<OrderTableProps> = ({ page = 1, limit = 10 }) => {
             <DataRow key={order.id}>
               <DataCell>#{order.id}</DataCell>
               <DataCell>{order.customerName}</DataCell>
-              <DataCell>{order.contentSize.toLocaleString()}</DataCell>
+              <DataCell>{order.contentSize.toLocaleString()} words</DataCell>
               <DataCell>
                 <JobBadge jobType={order.currentJob}>{order.currentJob}</JobBadge>
               </DataCell>
-              <DataCell>{calculateTimeRemaining(order.dueDateTime)}</DataCell>
+              <DataCell>
+                <TimeRemaining $isOverdue={calculateTimeRemaining(order.dueDateTime) === 'Overdue'}>
+                  {calculateTimeRemaining(order.dueDateTime)}
+                </TimeRemaining>
+              </DataCell>
               <DataCell>
                 <StatusBadge status={order.status}>{order.status}</StatusBadge>
               </DataCell>

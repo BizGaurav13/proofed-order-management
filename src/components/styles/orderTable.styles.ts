@@ -148,3 +148,8 @@ export const EmptyContainer = styled.div`
   padding: 48px;
   color: #6c757d;
 `;
+
+export const TimeRemaining = styled.span<{ $isOverdue?: boolean }>`
+  color: ${props => props.$isOverdue ? '#dc3545' : 'inherit'};
+  font-weight: ${props => props.$isOverdue ? '600' : 'inherit'};
+`;
