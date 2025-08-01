@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import OrderTable from './OrderTable';
+import { OrdersApiResponse } from '@/types/order';
 import {
   DashboardContainer,
   Header,
@@ -8,54 +10,94 @@ import {
   TableSection,
   SectionHeader,
   SectionTitle,
-  Controls,
-  Select,
-  Label,
   PaginationContainer,
-  PaginationInfo,
-  PaginationControls,
+  PaginationWrapper,
   PaginationButton,
-  PageInput
+  EllipsisSpan,
+  ItemsPerPageContainer,
+  ItemsPerPageSelect
 } from './styles/dashboard.styles';
+
+// Fetch orders function for pagination data
+const fetchOrdersForPagination = async (page: number = 1, limit: number = 10): Promise<OrdersApiResponse> => {
+  const response = await fetch(`/api/orders?page=${page}&limit=${limit}`);
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json();
+};
 
 const Dashboard: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [inputPage, setInputPage] = useState(currentPage.toString());
+  
+  // Fetch pagination data
+  const { data: paginationData } = useQuery({
+    queryKey: ['orders-pagination', currentPage, pageSize],
+    queryFn: () => fetchOrdersForPagination(currentPage, pageSize),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+  
+  const totalPages = paginationData?.data?.pagination?.totalPages || 1;
 
   const handlePageSizeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newPageSize = parseInt(event.target.value);
     setPageSize(newPageSize);
     setCurrentPage(1);
-    setInputPage('1');
   };
 
   const handlePreviousPage = () => {
     if (currentPage > 1) {
-      const newPage = currentPage - 1;
-      setCurrentPage(newPage);
-      setInputPage(newPage.toString());
+      setCurrentPage(currentPage - 1);
     }
   };
 
   const handleNextPage = () => {
-    const newPage = currentPage + 1;
-    setCurrentPage(newPage);
-    setInputPage(newPage.toString());
-  };
-
-  const handlePageInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputPage(event.target.value);
-  };
-
-  const handlePageInputSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    const pageNumber = parseInt(inputPage);
-    if (!isNaN(pageNumber) && pageNumber > 0) {
-      setCurrentPage(pageNumber);
-    } else {
-      setInputPage(currentPage.toString());
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
     }
+  };
+
+  const handlePageClick = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const generatePageNumbers = () => {
+    const pages: (number | string)[] = [];
+    const delta = 2; // Number of pages to show on each side of current page
+    
+    if (totalPages <= 7) {
+      // Show all pages if total is small
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // Always show first page
+      pages.push(1);
+      
+      if (currentPage > delta + 2) {
+        pages.push('...');
+      }
+      
+      // Show pages around current page
+      const start = Math.max(2, currentPage - delta);
+      const end = Math.min(totalPages - 1, currentPage + delta);
+      
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+      
+      if (currentPage < totalPages - delta - 1) {
+        pages.push('...');
+      }
+      
+      // Always show last page
+      if (totalPages > 1) {
+        pages.push(totalPages);
+      }
+    }
+    
+    return pages;
   };
 
   return (
@@ -68,51 +110,55 @@ const Dashboard: React.FC = () => {
       <TableSection>
         <SectionHeader>
           <SectionTitle>Orders</SectionTitle>
-          <Controls>
-            <Label htmlFor="pageSize">Show:</Label>
-            <Select
-              id="pageSize"
-              value={pageSize}
-              onChange={handlePageSizeChange}
-            >
-              <option value={5}>5 per page</option>
-              <option value={10}>10 per page</option>
-              <option value={20}>20 per page</option>
-              <option value={50}>50 per page</option>
-            </Select>
-          </Controls>
         </SectionHeader>
 
         <OrderTable page={currentPage} limit={pageSize} />
 
         <PaginationContainer>
-          <PaginationInfo>
-            Page {currentPage} • Showing {pageSize} items per page
-          </PaginationInfo>
-          
-          <PaginationControls>
+          <PaginationWrapper>
             <PaginationButton
               onClick={handlePreviousPage}
               disabled={currentPage <= 1}
             >
-              Previous
+              &#8249;
             </PaginationButton>
             
-            <form onSubmit={handlePageInputSubmit} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '14px', color: '#6c757d' }}>Page</span>
-              <PageInput
-                type="number"
-                min="1"
-                value={inputPage}
-                onChange={handlePageInputChange}
-                onBlur={handlePageInputSubmit}
-              />
-            </form>
+            {generatePageNumbers().map((page, index) => (
+              typeof page === 'number' ? (
+                <PaginationButton
+                  key={page}
+                  onClick={() => handlePageClick(page)}
+                  $active={currentPage === page}
+                >
+                  {page}
+                </PaginationButton>
+              ) : (
+                <EllipsisSpan key={`ellipsis-${index}`}>
+                  {page}
+                </EllipsisSpan>
+              )
+            ))}
             
-            <PaginationButton onClick={handleNextPage}>
-              Next
+            <PaginationButton
+              onClick={handleNextPage}
+              disabled={currentPage >= totalPages}
+            >
+              &#8250;
             </PaginationButton>
-          </PaginationControls>
+          </PaginationWrapper>
+          
+          <ItemsPerPageContainer>
+            <ItemsPerPageSelect
+              value={pageSize}
+              onChange={handlePageSizeChange}
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+              <option value={50}>50</option>
+            </ItemsPerPageSelect>
+            <span>/ page</span>
+          </ItemsPerPageContainer>
         </PaginationContainer>
       </TableSection>
     </DashboardContainer>
